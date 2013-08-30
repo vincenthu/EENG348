@@ -75,8 +75,9 @@ void loop() {
 }
 
 boolean isEven(int inByte) {
- 
+
   return !(1&inByte);
-  
+
 }
+
 
