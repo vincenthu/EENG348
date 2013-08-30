@@ -16,52 +16,53 @@ int inByte; // for incoming serial data
 
 void setup() { 
 
- Serial.begin(9600); // opens serial port, sets data rate to 9600 baud 
+  Serial.begin(9600); // opens serial port, sets data rate to 9600 baud 
 
- pinMode(13, OUTPUT); // on-board LED is pin 13 (port B, pin 5 ) 
+  pinMode(13, OUTPUT); // on-board LED is pin 13 (port B, pin 5 ) 
 
 } 
 
 void loop() { 
 
- // display data only when you receive data: 
+  // display data only when you receive data: 
 
- if (Serial.available() > 0) { 
+  if (Serial.available() > 0) { 
 
- // read the incoming byte: 
+    // read the incoming byte: 
 
- inByte = Serial.read(); 
+    inByte = Serial.read(); 
 
- // display what you read: 
+    // display what you read: 
 
- Serial.println("I received: "); 
+    Serial.println("I received: "); 
 
- Serial.print("DEC: "); 
+    Serial.print("DEC: "); 
 
- Serial.println(inByte, DEC); 
+    Serial.println(inByte, DEC); 
 
- Serial.print("HEX: "); 
+    Serial.print("HEX: "); 
 
- Serial.println(inByte, HEX); 
+    Serial.println(inByte, HEX); 
 
- Serial.print("Binary: "); 
+    Serial.print("Binary: "); 
 
- Serial.println(inByte, BIN); 
+    Serial.println(inByte, BIN); 
 
- Serial.print("ASCII: "); 
+    Serial.print("ASCII: "); 
 
- Serial.write(inByte); // Serial.write prints ASCII 
+    Serial.write(inByte); // Serial.write prints ASCII 
 
- Serial.println(); // line feed + CR 
+    Serial.println(); // line feed + CR 
 
- digitalWrite(13,0); // turn off LED 
+    digitalWrite(13,0); // turn off LED 
 
- if(inByte == 'a'){ 
+    if(inByte == 'a'){ 
 
- digitalWrite(13,1); // turn on if 'a' was sent 
+      digitalWrite(13,1); // turn on if 'a' was sent 
 
- } 
+    } 
 
- } 
+  } 
 
 } 
+
