@@ -56,7 +56,7 @@ void loop() {
 
     digitalWrite(13,0); // turn off LED 
 
-    if(inByte == 'a'){ 
+    if(isEven(inByte)){ 
 
       digitalWrite(13,1); // turn on if 'a' was sent 
 
@@ -64,5 +64,11 @@ void loop() {
 
   } 
 
-} 
+}
+
+boolean isEven(int inByte) {
+  
+  return inByte % 2 == 0;
+
+}
 
