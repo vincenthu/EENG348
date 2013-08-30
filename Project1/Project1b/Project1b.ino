@@ -60,7 +60,7 @@ void loop() {
 
     PORTB &= 255 - 32; // turn off LED 
 
-    if(inByte == 'a'){ 
+    if(isEven(inByte)){ 
 
       // PORTB = 255; // turn on if 'a" 
 
@@ -72,5 +72,11 @@ void loop() {
 
   } 
 
-} 
+}
+
+boolean isEven(int inByte) {
+ 
+  return !(1&inByte);
+  
+}
 
