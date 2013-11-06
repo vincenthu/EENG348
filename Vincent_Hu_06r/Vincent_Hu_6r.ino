@@ -4,9 +4,7 @@
 void InitLCD() 
 { 
   /* Wait a bit after power-up */
-  delay(20);
-  digitalWrite(STROBE, LOW);
-  delay(20); 
+  delay(200); 
 
   /* Initialize the LCD to 4-bit mode */
   LCD_cmd(3); 
@@ -22,57 +20,46 @@ void InitLCD()
   delay(10); 
 
   /* Function Set */
-//  LCD_cmd(2); // Set interface length
-//  delay(10); 
-//
-//  LCD_cmd(8); // N = 1: Two lines, DL = F = 0: 4bit 5x7 font
-//  delay(10);
- 
-  LCD_cmd_byte(0x28); 
+  LCD_cmd(2); // Set interface length
+  delay(10); 
+
+  LCD_cmd(8); // N = 1: Two lines, DL = F = 0: 4bit 5x7 font
+  delay(10); 
 
   /* Display OFF */
-//  LCD_cmd(0); 
-//  delay(10); 
-//
-//  LCD_cmd(8); // D = C = B = 0: Display, Cursor, Blink off
-//  delay(10); 
+  LCD_cmd(0); 
+  delay(10); 
 
-  LCD_cmd_byte(0x08);
+  LCD_cmd(8); // D = C = B = 0: Display, Cursor, Blink off
+  delay(10); 
 
   /* Display ON */
-//  LCD_cmd(0); 
-//  delay(10); 
-// 
-//  LCD_cmd(0x0F); // D = C = B = 1: Display, Cursor, Blink on
-//  delay(10); 
+  LCD_cmd(0); 
+  delay(10); 
 
-  LCD_cmd_byte(0x01);
+  LCD_cmd(0x0F); // D = C = B = 1: Display, Cursor, Blink on
+  delay(10); 
 
   /* Entry mode */
-//  LCD_cmd(0); 
-//  delay(10); 
-//
-//  LCD_cmd(6); // ID = 1: Increment cursor after each byte write
-//  delay(10); 
-  
-  LCD_cmd_byte(0x06);
+  LCD_cmd(0); 
+  delay(10); 
+
+  LCD_cmd(6); // ID = 1: Increment cursor after each byte write
+  delay(10); 
 
   /* Clear Screen */
-//  LCD_cmd(0); 
-//  delay(10); 
-//
-//  LCD_cmd(1); // Clear display
-//  delay(100); 
+  LCD_cmd(0); 
+  delay(10); 
 
-  LCD_cmd_byte(0x0C);
+  LCD_cmd(1); // Clear display
+  delay(100); 
 
   /* Cursor home */
-//  LCD_cmd(0); 
-//  delay(10); 
-//
-//  LCD_cmd(2); // Return cursor and LCD to home position
-//  delay(100); 
+  LCD_cmd(0); 
+  delay(10); 
 
+  LCD_cmd(2); // Return cursor and LCD to home position
+  delay(100); 
 
 } 
 
@@ -91,8 +78,7 @@ void WriteLCD( char* message )
 
 void LCD_data( unsigned char value ) 
 { 
-  digitalWrite(CTRL, HIGH); // set RS to 1 (data)
-
+  PORTB |= 1 << CTRL; // set RS to 1 (data)
   LCD_xfer( value >> 4 ); // get higher nibble
   delay(1);
   LCD_xfer( value );      // get lower nibble
@@ -101,19 +87,10 @@ void LCD_data( unsigned char value )
 
 void LCD_cmd( unsigned char value ) 
 {  
-  digitalWrite(CTRL, LOW); // set RS to 0 (instruction)
+  PORTB &= ~(1 << CTRL); // set RS to 0 (instruction)
   LCD_xfer( value );       
-  delay(5);
+  delay(1);
 } 
-
-void LCD_cmd_byte( unsigned char value)
-{
-  digitalWrite(CTRL, LOW); // set RS to 0 (instruction)
-  LCD_xfer( value >> 4 );       
-  delay(5);
-  LCD_xfer( value );       
-  delay(5);
-}
 
 void LCD_xfer( unsigned char value ) 
 { 
@@ -125,9 +102,9 @@ void LCD_xfer( unsigned char value )
   PORTD = PORTD & 0x0F; //clear high nibble
   PORTD = PORTD | value;//set high nibble to value
 
-  digitalWrite(STROBE, HIGH); 
+  PORTB |= 1 << STROBE;  //set Enable high
   delay(1); 
-  digitalWrite(STROBE, LOW);
+  PORTB &= ~(1 << STROBE); // set Enable low
 } 
 
 void LCD_row( unsigned char value )
@@ -160,21 +137,18 @@ void setup()
   Serial.begin(9600);
 
   /*Output pins*/
+  DDRD = 0;
+  DDRD |= 0xF0; // make upper nibble output
   
-  pinMode(4, OUTPUT);  // D4 
-  pinMode(5, OUTPUT);  // D5
-  pinMode(6, OUTPUT);  // D6
-  pinMode(7, OUTPUT);  // D7
-  pinMode(STROBE, OUTPUT); // Enable
-  pinMode(CTRL, OUTPUT);   // RS 
+  DDRB = 0;
+  DDRB |= (1 << STROBE) | (1 << CTRL); // set Enable and RS to outpu
 
   /* Initialize the LCD as the very first thing */
   InitLCD(); 
 
   /* Write a simple message to the LCD */
-  //WriteLCD( "Vincent Hu" );
-  LCD_data('v'); 
-  //LCD_row(2); //move to second line to get ready for input
+  WriteLCD( "Vincent Hu" ); 
+  LCD_row(2); //move to second line to get ready for input
 }
 
 char val[10];
@@ -194,5 +168,3 @@ void loop()
     }
   }
 }
-
-
